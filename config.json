@@ -1,0 +1,46 @@
+{
+    "local": {
+        "rcid": 1,
+        "asn": 100,
+        "ip": "localhost",
+        "port": 65123
+    },
+    "dc": [
+        {
+            "dcid": 1,
+            "capacity": 2,
+            "cost": 5
+        },
+        {
+            "dcid": 2,
+            "capacity": 5,
+            "cost": 5
+        }
+    ],
+    "link": [
+        {
+            "rcid": 2,
+            "asn": 200,
+            "capacity": 1000,
+            "cost": 10,
+            "ip": "localhost",
+            "port": 65321
+        },
+        {
+            "rcid": 3,
+            "asn": 300,
+            "capacity": 10000,
+            "cost": 10,
+            "ip": "localhost",
+            "port": 65432
+        },
+        {
+            "rcid": 4,
+            "asn": 400,
+            "capacity": 1500,
+            "cost": 10,
+            "ip": "localhost",
+            "port": 65234
+        }
+    ]
+}

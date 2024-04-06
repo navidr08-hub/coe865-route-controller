@@ -1,0 +1,8 @@
+1 100 10.1.1.1	; RCID ASN IPAddress (local rc info)
+3	; No. of RCs connected
+2 200 1000 10 10.1.1.2	; RCID ASN Mbps $/Mbps IPAddress
+3 300 10000 10 10.1.1.3	; RCID ASN Mbps $/Mbps IPAddress
+4 400 1500 10 10.1.1.4	; RCID ASN Mbps $/Mbps IPAddress
+2	; No. of DCs connected
+1 2 5 	; DC# Mbps(link capacity) cost
+2 5 5	; DC# Mbps(link capacity) $/Mbps (cost)
