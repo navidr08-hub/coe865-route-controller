@@ -5,7 +5,7 @@
         "ip": "localhost",
         "port": 65123
     },
-    "dc": [
+    "dcs": [
         {
             "dcid": 1,
             "capacity": 2,
@@ -17,7 +17,7 @@
             "cost": 5
         }
     ],
-    "link": [
+    "neighbors": [
         {
             "rcid": 2,
             "asn": 200,
