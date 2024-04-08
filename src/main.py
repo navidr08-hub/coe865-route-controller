@@ -1,7 +1,3 @@
-import socket
-import threading
-import time
-
 from setup import create_router
 
 # Define router information (IP address)
