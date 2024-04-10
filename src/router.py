@@ -53,6 +53,8 @@ class Router:
         total_cost = 0
         for i in range(len(path) - 1):
             current_rcid = path[i]
+            if current_rcid == self.rcid:
+                continue
             neighbor = self.neighbors[current_rcid]
             # Find the cost of the link between current router and its neighbor
             total_cost += self.composite_cost(neighbor.capacity, neighbor.cost)
@@ -125,12 +127,20 @@ class Router:
             self.neighbors[rcid].reset()
 
         self.purge_dead_routes()
+
         for neighbor in self.neighbors.values():
             if neighbor.is_alive:
                 path, cost = self.get_optimal_path(self.rcid, rcid)
-                for dc in neighbor.dcs:
-                    route = {"asn": neighbor.asn, "dcid": dc["dcid"], "path": path, "cost": cost}
-                    self.routing_table.append(route)
+                for route in self.routing_table:
+                    if route["asn"] == neighbor.asn:
+                        if cost > int(route["cost"]):
+                            route["cost"] = cost
+                            route["path"] = path
+
+                        return
+                    
+                route = {"asn": neighbor.asn, "path": path, "cost": cost}
+                self.routing_table.append(route)
 
     def show_ip_route(self):
         print("Routing Table:")
