@@ -110,12 +110,14 @@ class Router:
 
     def update_routing_table(self, rcu):
         rcid = rcu["RCID"]
-        port = rcu["PORT"]
-        local_asn = rcu["LOCAL_ASN"]
-        link_capacity = rcu["Link Capacity"]
-        link_cost = rcu["Link Cost"]
-        dest_asn = rcu["DEST_ASN"]
-        local_dcs = rcu["List [DCs]"]
+        # port = rcu["PORT"]
+        # local_asn = rcu["LOCAL_ASN"]
+        # link_capacity = rcu["Link Capacity"]
+        # link_cost = rcu["Link Cost"]
+        # dest_asn = rcu["DEST_ASN"]
+        # local_dcs = rcu["List [DCs]"]
+
+        self.rcu_buffer.append(rcu)
 
         if self.watch_rcu:
             print(f"Received RCU from {rcid}")

@@ -71,5 +71,4 @@ class DirectNeighbor(Neighbor):
             "PORT": self.port,
             "COST": Router.composite_cost(self.capacity, self.cost),
             "TIMER": self.up_timer,
-            "NEIGHBORS": [str(neighbor) for neighbor in self.neighbors]
-            }, indent=2)
+            "NEIGHBORS": [neighbor.rcid for neighbor in self.neighbors]})
