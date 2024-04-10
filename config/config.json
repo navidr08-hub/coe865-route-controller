@@ -1,0 +1,186 @@
+{
+    "1": {
+        "local": {
+            "rcid": 1,
+            "asn": 100,
+            "ip": "localhost",
+            "port": 65123
+        },
+        "dcs": [
+            {
+                "dcid": 1,
+                "capacity": 2,
+                "cost": 5
+            },
+            {
+                "dcid": 2,
+                "capacity": 5,
+                "cost": 5
+            }
+        ],
+        "neighbors": [
+            {
+                "rcid": 2,
+                "asn": 200,
+                "capacity": 1000,
+                "cost": 10,
+                "ip": "localhost",
+                "port": 65321
+            },
+            {
+                "rcid": 3,
+                "asn": 300,
+                "capacity": 10000,
+                "cost": 10,
+                "ip": "localhost",
+                "port": 65432
+            },
+            {
+                "rcid": 4,
+                "asn": 400,
+                "capacity": 1500,
+                "cost": 10,
+                "ip": "localhost",
+                "port": 65234
+            }
+        ]
+    },
+    "2": {
+        "local": {
+            "rcid": 2,
+            "asn": 200,
+            "ip": "localhost",
+            "port": 65321
+        },
+        "dcs": [
+            {
+                "dcid": 1,
+                "capacity": 2,
+                "cost": 5
+            },
+            {
+                "dcid": 2,
+                "capacity": 5,
+                "cost": 5
+            }
+        ],
+        "neighbors": [
+            {
+                "rcid": 1,
+                "asn": 100,
+                "capacity": 1000,
+                "cost": 10,
+                "ip": "localhost",
+                "port": 65123
+            },
+            {
+                "rcid": 3,
+                "asn": 300,
+                "capacity": 10000,
+                "cost": 10,
+                "ip": "localhost",
+                "port": 65432
+            },
+            {
+                "rcid": 4,
+                "asn": 400,
+                "capacity": 1500,
+                "cost": 10,
+                "ip": "localhost",
+                "port": 65234
+            }
+        ]
+    },
+    "3": {
+        "local": {
+            "rcid": 3,
+            "asn": 300,
+            "ip": "localhost",
+            "port": 65432
+        },
+        "dcs": [
+            {
+                "dcid": 1,
+                "capacity": 2,
+                "cost": 5
+            },
+            {
+                "dcid": 2,
+                "capacity": 5,
+                "cost": 5
+            }
+        ],
+        "neighbors": [
+            {
+                "rcid": 1,
+                "asn": 100,
+                "capacity": 1000,
+                "cost": 10,
+                "ip": "localhost",
+                "port": 65123
+            },
+            {
+                "rcid": 2,
+                "asn": 200,
+                "capacity": 1000,
+                "cost": 15,
+                "ip": "localhost",
+                "port": 65321
+            },
+            {
+                "rcid": 4,
+                "asn": 400,
+                "capacity": 1500,
+                "cost": 15,
+                "ip": "localhost",
+                "port": 65234
+            }
+        ]
+    },
+    "4": {
+        "local": {
+            "rcid": 4,
+            "asn": 400,
+            "ip": "localhost",
+            "port": 65234
+        },
+        "dcs": [
+            {
+                "dcid": 1,
+                "capacity": 2,
+                "cost": 5
+            },
+            {
+                "dcid": 2,
+                "capacity": 5,
+                "cost": 5
+            }
+        ],
+        "neighbors": [
+            {
+                "rcid": 1,
+                "asn": 100,
+                "capacity": 1500,
+                "cost": 10,
+                "ip": "localhost",
+                "port": 65123
+            },
+            {
+                "rcid": 2,
+                "asn": 200,
+                "capacity": 1000,
+                "cost": 15,
+                "ip": "localhost",
+                "port": 65321
+            },
+            {
+                "rcid": 3,
+                "asn": 300,
+                "capacity": 1500,
+                "cost": 15,
+                "ip": "localhost",
+                "port": 65432
+            }
+        ]
+    }
+}
