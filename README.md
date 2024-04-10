@@ -8,7 +8,6 @@ git clone https://github.com/navidr08-hub/coe865-route-controller.git
 cd coe865-route-controller
 
 ### Run a router
-cd src
-python main.py
+python src\main.py
 "Which router would you like to run?" (Enter router number eg. 1)
 type - "help" (To list commands)
