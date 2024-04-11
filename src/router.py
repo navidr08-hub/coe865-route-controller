@@ -35,8 +35,7 @@ class Router:
     def get_rcus(self, num):
         buffer_len = len(self.rcu_buffer)
         if num > MAX_BUFFER_SIZE:
-            print(
-                f"Number of rcus requested exceeds buffer size ({MAX_BUFFER_SIZE}).")
+            print(f"Number of rcus requested exceeds buffer size ({MAX_BUFFER_SIZE}).")
         elif num > buffer_len:
             print("Not enough rcus collected yet. See the latest below.")
             return list(self.rcu_buffer)
@@ -47,15 +46,14 @@ class Router:
 
     @staticmethod
     def composite_cost(capacity, cost):
-        return capacity*CAPACITY_WEIGHT + cost*COST_WEIGHT
+        return 1/capacity * CAPACITY_WEIGHT + cost*COST_WEIGHT
     
     def calculate_total_cost(self, path):
         total_cost = 0
-        for i in range(len(path) - 1):
-            current_rcid = path[i]
-            if current_rcid == self.rcid:
+        for rcid in path:
+            if rcid == self.rcid:
                 continue
-            neighbor = self.neighbors[current_rcid]
+            neighbor = self.neighbors[rcid]
             # Find the cost of the link between current router and its neighbor
             total_cost += self.composite_cost(neighbor.capacity, neighbor.cost)
         return total_cost
@@ -108,19 +106,13 @@ class Router:
                     if neighbor.rcid in path:
                         self.routing_table.pop(i)
 
-    def update_routing_table(self, rcu):
+    def update_routing_table(self, rcu: dict):
         rcid = rcu["RCID"]
-        # port = rcu["PORT"]
-        # local_asn = rcu["LOCAL_ASN"]
-        # link_capacity = rcu["Link Capacity"]
-        # link_cost = rcu["Link Cost"]
-        # dest_asn = rcu["DEST_ASN"]
-        # local_dcs = rcu["List [DCs]"]
 
         self.rcu_buffer.append(rcu)
 
         if self.watch_rcu:
-            print(f"Received RCU from {rcid}")
+            print(f"Received {rcu}")
 
         # Check neighbors
         if not self.neighbors[rcid].is_alive:
@@ -135,7 +127,7 @@ class Router:
                 path, cost = self.get_optimal_path(self.rcid, rcid)
                 for route in self.routing_table:
                     if route["asn"] == neighbor.asn:
-                        if cost > int(route["cost"]):
+                        if cost < int(route["cost"]):
                             route["cost"] = cost
                             route["path"] = path
 
@@ -145,15 +137,22 @@ class Router:
                 self.routing_table.append(route)
 
     def show_ip_route(self):
+        if len(self.routing_table) < 1:
+            print("Currently no routes to neighboring routers.")
+            return
+        
         print("Routing Table:")
         for entry in self.routing_table:
             print(dict(entry))
+
+        print("")
 
     def show_ip_config(self):
         print("Router ID:", self.rcid)
         print("ASN:", self.asn)
         print("IP Address:", self.ip)
         print("Port:", self.port)
+        print("")
 
     def watch_rcus(self, command):
         try:
@@ -163,19 +162,23 @@ class Router:
             self.set_watch_rcu(False)
         except ValueError:
             print("Not an integer. Please enter an integer.")
-            print("example: watch rcu 1")
+            print("example: watch rcu 1\n")
 
     def show_rcus(self, command):
         try:
             num = int(command.split()[-1])
             rcus = self.get_rcus(num)
             if rcus:
-                print(f"{num} rcus in buffer\n_______________________")
+                print(f"{len(rcus)} rcus in buffer\n_______________________")
                 for rcu in rcus:
                     print(rcu)
+            else:
+                print("Currently no rcus in buffer.")
+
+            print("")
         except ValueError:
             print("Not an integer. Please enter an integer.")
-            print("example: show rcu 1")
+            print("example: show rcu 1\n")
 
     def show_neighbors(self):
         for neighbor in self.neighbors.values():
@@ -207,7 +210,7 @@ class Router:
                     time.sleep(RCU_TIMER)
         except Exception as e:
             print(tb.format_exc())
-            print("Shutting down, please enter any key...")
+            print("Shutting down, please enter any key...\n")
             self.shutdown()
 
     def receive_rcu(self):  # Function to receive hello messages from neighbors
@@ -227,13 +230,13 @@ class Router:
                         pass  # Continue listening if no data received within the timeout
         except Exception:
             print(tb.format_exc())
-            print("Shutting down, please enter any key...")
+            print("Shutting down, please enter any key...\n")
             self.shutdown()
 
     def get_input(self):
         try:
             while not self.shutdown_event.is_set():
-                command = input(f"\nR{self.rcid}> ")
+                command = input(f"R{self.rcid}> ")
 
                 if command == "help":
                     print("commands:\n")
@@ -244,6 +247,7 @@ class Router:
                     print(" - show ip neighbor")
                     print(" - show paths")
                     print(" - shutdown")
+                    print("")
                 elif command == "show ip route":
                     self.show_ip_route()
                 elif command == "show ip config":
@@ -258,6 +262,8 @@ class Router:
                     self.show_paths()
                 elif command == "shutdown":
                     self.shutdown()
+                elif command.strip() == "":
+                    pass
                 else:
                     print("Invalid command. Please try again.")
         except Exception:
