@@ -58,6 +58,31 @@ class Router:
             total_cost += self.composite_cost(neighbor.capacity, neighbor.cost)
         return total_cost
 
+    # def get_all_paths(self, src_rcid, dest_rcid, visited=None, path=None):
+    #     if visited is None:
+    #         visited = set()
+    #     if path is None:
+    #         path = []
+
+    #     visited.add(src_rcid)
+    #     path = path + [src_rcid]
+
+    #     if src_rcid == dest_rcid:
+    #         return [path]
+
+    #     paths = []
+    #     for neighbor in self.neighbors.values():
+    #         if neighbor.is_alive and neighbor.rcid not in visited:
+    #             new_paths = self.get_all_paths(neighbor.rcid, dest_rcid, visited, path)
+    #             for new_path in new_paths:
+    #                 paths.append(new_path)
+
+    #     visited.remove(src_rcid)
+    #     visited.remove(dest_rcid)
+
+    #     print(paths)
+    #     return paths
+
     def get_all_paths(self, src_rcid, dest_rcid, visited=None, path=None):
         if visited is None:
             visited = set()
@@ -68,16 +93,15 @@ class Router:
         path = path + [src_rcid]
 
         if src_rcid == dest_rcid:
+            # Return the current path when the destination is reached
             return [path]
 
         paths = []
-        for neighbor in self.neighbors.values():
-            if neighbor.is_alive and neighbor.rcid not in visited:
-                new_paths = self.get_all_paths(neighbor.rcid, dest_rcid, visited, path)
+        for neighbor_rcid in self.neighbors.keys():
+            if neighbor_rcid not in visited:
+                new_paths = self.get_all_paths(neighbor_rcid, dest_rcid, visited.copy(), path.copy())
                 for new_path in new_paths:
                     paths.append(new_path)
-
-        visited.remove(src_rcid)
 
         return paths
     
@@ -102,18 +126,10 @@ class Router:
         for neighbor in self.neighbors.values():
             if not neighbor.is_alive:
                 for i, route in enumerate(self.routing_table):
-                    path = list(route["path"])
-                    if neighbor.rcid in path:
+                    if neighbor.rcid in list(route["path"]):
                         self.routing_table.pop(i)
 
-    def update_routing_table(self, rcu: dict):
-        rcid = rcu["RCID"]
-
-        self.rcu_buffer.append(rcu)
-
-        if self.watch_rcu:
-            print(f"Received {rcu}")
-
+    def update_routing_table(self, rcid: int):
         # Check neighbors
         if not self.neighbors[rcid].is_alive:
             self.neighbors[rcid].start()
@@ -122,19 +138,23 @@ class Router:
 
         self.purge_dead_routes()
 
-        for neighbor in self.neighbors.values():
-            if neighbor.is_alive:
-                path, cost = self.get_optimal_path(self.rcid, rcid)
-                for route in self.routing_table:
-                    if route["asn"] == neighbor.asn:
-                        if cost < int(route["cost"]):
-                            route["cost"] = cost
-                            route["path"] = path
+        def update_existing_routes(asn, path, cost):
+            for route in self.routing_table:
+                if route["asn"] == asn:
+                    if cost < int(route["cost"]):
+                        route["cost"] = cost
+                        route["path"] = path
 
-                        return
-                    
-                route = {"asn": neighbor.asn, "path": path, "cost": cost}
-                self.routing_table.append(route)
+                    return True
+                
+            return False
+
+        # for neighbor in self.neighbors.values():
+        #     if neighbor.is_alive:
+        path, cost = self.get_optimal_path(self.rcid, rcid)
+        if not update_existing_routes(self.neighbors[rcid].asn, path, cost):
+            route = {"asn": self.neighbors[rcid].asn, "path": path, "cost": cost}
+            self.routing_table.append(route)
 
     def show_ip_route(self):
         if len(self.routing_table) < 1:
@@ -225,7 +245,11 @@ class Router:
                             break
                         else:
                             rcu = json.loads(data)
-                            self.update_routing_table(rcu)
+                            if self.watch_rcu:
+                                print(f"Received {rcu}")
+
+                            self.rcu_buffer.append(rcu)
+                            self.update_routing_table(rcu["RCID"])
                     except socket.timeout:
                         pass  # Continue listening if no data received within the timeout
         except Exception:
